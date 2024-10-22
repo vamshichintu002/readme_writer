@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Image from "next/image"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
@@ -20,7 +19,7 @@ export default function Home() {
   const [readme, setReadme] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [mode, setMode] = useState<'preview' | 'raw' | 'edit'>('preview')
+  const [mode, setMode] = useState<'preview' | 'raw'>('preview')
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -64,32 +63,11 @@ export default function Home() {
     }
   }
 
-  const handleCopy = () => {
-    if (readme) {
-      navigator.clipboard.writeText(readme)
-      // Optionally, you can add a state to show a "Copied!" message
-    }
-  }
-
-  const handleDownload = () => {
-    if (readme) {
-      const blob = new Blob([readme], { type: 'text/markdown' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = 'README.md'
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    }
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
-      <main className="w-full max-w-4xl bg-white dark:bg-gray-800 shadow-xl rounded-lg overflow-hidden">
-        <div className="p-6 sm:p-10">
-          <h1 className="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">Github README Writer</h1>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col items-center justify-center p-4 font-sans">
+      <main className="w-full max-w-6xl bg-white dark:bg-gray-800 shadow-xl rounded-lg overflow-hidden">
+        <div className="p-6">
+          <h1 className="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">GitHub README Writer</h1>
           <form onSubmit={handleSubmit} className="mb-8">
             <div className="mb-4">
               <label htmlFor="repoUrl" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
@@ -136,63 +114,52 @@ export default function Home() {
           {readme && (
             <div className="mb-6">
               <h2 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">Generated README</h2>
-              <div className="mb-4 flex space-x-2">
-                <button
-                  onClick={handleCopy}
-                  className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-150 ease-in-out"
-                >
-                  Copy README
-                </button>
-                <button
-                  onClick={handleDownload}
-                  className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out"
-                >
-                  Download README
-                </button>
-              </div>
-              <div className="mb-4 flex space-x-2">
+              <div className="flex border-b border-gray-200 dark:border-gray-700 mb-4">
                 <button
                   onClick={() => setMode('preview')}
-                  className={`py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition duration-150 ease-in-out ${
-                    mode === 'preview' ? 'bg-purple-500 text-white' : 'bg-gray-200 text-gray-700'
+                  className={`py-2 px-4 font-medium text-sm focus:outline-none ${
+                    mode === 'preview'
+                      ? 'text-green-500 border-b-2 border-green-500'
+                      : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
                   }`}
                 >
                   Preview
                 </button>
                 <button
                   onClick={() => setMode('raw')}
-                  className={`py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition duration-150 ease-in-out ${
-                    mode === 'raw' ? 'bg-purple-500 text-white' : 'bg-gray-200 text-gray-700'
+                  className={`py-2 px-4 font-medium text-sm focus:outline-none ${
+                    mode === 'raw'
+                      ? 'text-gray-700 dark:text-gray-200 border-b-2 border-gray-700 dark:border-gray-200'
+                      : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
                   }`}
                 >
                   Raw
                 </button>
-                <button
-                  onClick={() => setMode('edit')}
-                  className={`py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition duration-150 ease-in-out ${
-                    mode === 'edit' ? 'bg-purple-500 text-white' : 'bg-gray-200 text-gray-700'
-                  }`}
-                >
-                  Edit
-                </button>
               </div>
-              {mode === 'preview' && (
-                <div className="bg-white dark:bg-gray-800 p-4 rounded-md overflow-x-auto prose dark:prose-invert max-w-none">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{readme}</ReactMarkdown>
+              <div className="flex space-x-4">
+                <div className="w-1/2">
+                  <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Editor</h3>
+                  <textarea
+                    value={readme}
+                    onChange={(e) => setReadme(e.target.value)}
+                    className="w-full h-[500px] p-4 bg-gray-900 text-gray-100 font-mono text-sm border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  />
                 </div>
-              )}
-              {mode === 'raw' && (
-                <pre className="bg-gray-100 dark:bg-gray-700 p-4 rounded-md overflow-x-auto whitespace-pre-wrap h-[500px] overflow-y-auto text-sm text-gray-800 dark:text-gray-200">
-                  {readme}
-                </pre>
-              )}
-              {mode === 'edit' && (
-                <textarea
-                  value={readme}
-                  onChange={(e) => setReadme(e.target.value)}
-                  className="w-full h-[500px] p-4 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                />
-              )}
+                <div className="w-1/2">
+                  <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">
+                    {mode === 'preview' ? 'Preview' : 'Raw'}
+                  </h3>
+                  {mode === 'preview' ? (
+                    <div className="bg-white dark:bg-gray-800 p-4 rounded-md overflow-x-auto prose dark:prose-invert max-w-none h-[500px] overflow-y-auto border border-gray-200 dark:border-gray-700">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{readme}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    <pre className="bg-white dark:bg-gray-800 p-4 rounded-md overflow-x-auto whitespace-pre-wrap h-[500px] overflow-y-auto text-sm text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
+                      {readme}
+                    </pre>
+                  )}
+                </div>
+              </div>
             </div>
           )}
         </div>
