@@ -1,18 +1,13 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log('Received request:', req.method, JSON.stringify(req.body));
+export async function POST(request: Request) {
+  console.log('Received request');
 
-  if (req.method !== 'POST') {
-    console.log('Method not allowed:', req.method);
-    return res.status(405).json({ message: 'Method Not Allowed' });
-  }
-
-  const { repoUrl } = req.body;
+  const { repoUrl } = await request.json();
 
   if (!repoUrl) {
     console.log('Missing repoUrl in request body');
-    return res.status(400).json({ message: 'Repository URL is required' });
+    return NextResponse.json({ message: 'Repository URL is required' }, { status: 400 });
   }
 
   console.log('Received repoUrl:', repoUrl);
@@ -22,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   
   if (!match) {
     console.log('Invalid repository URL format:', repoUrl);
-    return res.status(400).json({ message: 'Invalid repository URL format' });
+    return NextResponse.json({ message: 'Invalid repository URL format' }, { status: 400 });
   }
 
   const [_, owner, repo] = match;
@@ -65,9 +60,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
 
     console.log('Processed repoInfo:', JSON.stringify(repoInfo));
-    res.status(200).json(repoInfo);
+    return NextResponse.json(repoInfo);
   } catch (error) {
     console.error('Error in gitfetch handler:', error);
-    res.status(500).json({ message: error instanceof Error ? error.message : 'Error fetching repository information' });
+    return NextResponse.json(
+      { message: error instanceof Error ? error.message : 'Error fetching repository information' },
+      { status: 500 }
+    );
   }
 }
