@@ -64,17 +64,11 @@ export async function POST(request: Request) {
     const repoInfo = await request.json();
     console.log('Received repo info:', JSON.stringify(repoInfo));
 
-    const models = [
-      "mixtral-8x7b-32768",
-      "llama-3.2-90b-vision-preview"
-    ];
+    const model = "mixtral-8x7b-32768";
 
-    const readmes = await Promise.all(models.map(model => generateReadme(repoInfo, model)));
+    const readme = await generateReadme(repoInfo, model);
 
-    return NextResponse.json({
-      mixtral: readmes[0],
-      llama32: readmes[1]
-    });
+    return NextResponse.json({ readme });
   } catch (error) {
     console.error('Error in readme generation:', error);
     return NextResponse.json(

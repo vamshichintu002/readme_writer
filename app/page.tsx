@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import Image from "next/image"
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 interface RepoInfo {
   name: string
@@ -12,25 +14,20 @@ interface RepoInfo {
   issues: number
 }
 
-interface ReadmeVersions {
-  mixtral: string
-  llama32: string
-}
-
 export default function Home() {
   const [repoUrl, setRepoUrl] = useState('')
   const [repoInfo, setRepoInfo] = useState<RepoInfo | null>(null)
-  const [readmeVersions, setReadmeVersions] = useState<ReadmeVersions | null>(null)
+  const [readme, setReadme] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState('mixtral')
+  const [previewMode, setPreviewMode] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
     setRepoInfo(null)
-    setReadmeVersions(null)
+    setReadme(null)
 
     try {
       // Fetch repository information
@@ -47,7 +44,7 @@ export default function Home() {
       const repoData = await repoResponse.json()
       setRepoInfo(repoData)
 
-      // Generate READMEs
+      // Generate README
       const readmeResponse = await fetch('/api/readme', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -55,11 +52,11 @@ export default function Home() {
       })
 
       if (!readmeResponse.ok) {
-        throw new Error('Failed to generate READMEs')
+        throw new Error('Failed to generate README')
       }
 
       const readmeData = await readmeResponse.json()
-      setReadmeVersions(readmeData)
+      setReadme(readmeData.readme)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unexpected error occurred')
     } finally {
@@ -88,7 +85,7 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex flex-col items-center justify-center p-4 sm:p-8 font-sans">
       <main className="w-full max-w-3xl bg-white dark:bg-gray-800 shadow-xl rounded-lg overflow-hidden">
         <div className="p-6 sm:p-10">
-          <h1 className="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">README Writer</h1>
+          <h1 className="text-3xl font-bold mb-6 text-center text-gray-800 dark:text-white">Github README Writer</h1>
           <form onSubmit={handleSubmit} className="mb-8">
             <div className="mb-4">
               <label htmlFor="repoUrl" className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
@@ -132,54 +129,42 @@ export default function Home() {
             </div>
           )}
 
-          {readmeVersions && (
+          {readme && (
             <div className="mb-6">
-              <h2 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">Generated READMEs</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-white">Generated README</h2>
               <p className="mb-4 text-gray-600 dark:text-gray-300">
-                Each generated README includes a comprehensive structure with sections for project introduction, 
+                The generated README includes a comprehensive structure with sections for project introduction, 
                 features, installation, usage, contributing guidelines, and license information.
               </p>
-              <div className="mb-4">
-                <div className="flex border-b border-gray-200 dark:border-gray-700">
-                  {['mixtral', 'llama32'].map((model) => (
-                    <button
-                      key={model}
-                      className={`py-2 px-4 font-medium text-sm focus:outline-none ${
-                        activeTab === model
-                          ? 'border-b-2 border-blue-500 text-blue-500'
-                          : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
-                      }`}
-                      onClick={() => setActiveTab(model)}
-                    >
-                      {model === 'mixtral' ? 'Mixtral 8x7B' : 'LLaMA 3.2 90B'}
-                    </button>
-                  ))}
-                </div>
+              <div className="mb-4 flex space-x-2">
+                <button
+                  onClick={() => handleCopy(readme)}
+                  className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-150 ease-in-out"
+                >
+                  Copy README
+                </button>
+                <button
+                  onClick={() => handleDownload(readme, `README.md`)}
+                  className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out"
+                >
+                  Download README
+                </button>
+                <button
+                  onClick={() => setPreviewMode(!previewMode)}
+                  className="bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition duration-150 ease-in-out"
+                >
+                  {previewMode ? 'Show Raw' : 'Show Preview'}
+                </button>
               </div>
-              {Object.entries(readmeVersions).map(([model, content]) => (
-                <div key={model} className={`mb-6 ${activeTab === model ? '' : 'hidden'}`}>
-                  <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
-                    {model === 'mixtral' ? 'Mixtral 8x7B' : 'LLaMA 3.2 90B'} Model
-                  </h3>
-                  <div className="mb-4 flex space-x-2">
-                    <button
-                      onClick={() => handleCopy(content)}
-                      className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-150 ease-in-out"
-                    >
-                      Copy README
-                    </button>
-                    <button
-                      onClick={() => handleDownload(content, `README_${model}.md`)}
-                      className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out"
-                    >
-                      Download README
-                    </button>
-                  </div>
-                  <pre className="bg-gray-100 dark:bg-gray-700 p-4 rounded-md overflow-x-auto whitespace-pre-wrap h-[500px] overflow-y-auto text-sm text-gray-800 dark:text-gray-200">
-                    {content}
-                  </pre>
+              {previewMode ? (
+                <div className="bg-white dark:bg-gray-800 p-4 rounded-md overflow-x-auto prose dark:prose-invert max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{readme}</ReactMarkdown>
                 </div>
-              ))}
+              ) : (
+                <pre className="bg-gray-100 dark:bg-gray-700 p-4 rounded-md overflow-x-auto whitespace-pre-wrap h-[500px] overflow-y-auto text-sm text-gray-800 dark:text-gray-200">
+                  {readme}
+                </pre>
+              )}
             </div>
           )}
         </div>
