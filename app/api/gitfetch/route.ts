@@ -1,5 +1,39 @@
 import { NextResponse } from 'next/server';
 
+async function fetchWithAuth(url: string) {
+  return fetch(url, {
+    headers: {
+      'Authorization': `token ${process.env.GITHUB_API_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'User-Agent': 'readme-writer-app'
+    }
+  });
+}
+
+async function getRepoStructure(owner: string, repo: string): Promise<any> {
+  // Fetch the latest commit
+  const commitsUrl = `https://api.github.com/repos/${owner}/${repo}/commits`;
+  const commitsResponse = await fetchWithAuth(commitsUrl);
+  
+  if (!commitsResponse.ok) {
+    throw new Error(`Failed to fetch commits: ${commitsResponse.statusText}`);
+  }
+  
+  const commits = await commitsResponse.json();
+  const latestCommit = commits[0];
+  const treeSha = latestCommit.commit.tree.sha;
+
+  // Fetch the repository tree recursively
+  const treeUrl = `https://api.github.com/repos/${owner}/${repo}/git/trees/${treeSha}?recursive=1`;
+  const treeResponse = await fetchWithAuth(treeUrl);
+
+  if (!treeResponse.ok) {
+    throw new Error(`Failed to fetch tree: ${treeResponse.statusText}`);
+  }
+
+  return treeResponse.json();
+}
+
 export async function POST(request: Request) {
   console.log('Received request');
 
@@ -29,13 +63,7 @@ export async function POST(request: Request) {
 
     console.log('GitHub API Token:', process.env.GITHUB_API_TOKEN ? 'Present' : 'Missing');
 
-    const response = await fetch(apiUrl, {
-      headers: {
-        'Authorization': `token ${process.env.GITHUB_API_TOKEN}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'User-Agent': 'readme-writer-app'
-      }
-    });
+    const response = await fetchWithAuth(apiUrl);
 
     console.log('GitHub API response status:', response.status);
 
@@ -48,6 +76,9 @@ export async function POST(request: Request) {
     const data = await response.json();
     console.log('GitHub API response data:', JSON.stringify(data));
 
+    // Fetch repository structure
+    const structure = await getRepoStructure(owner, repo);
+
     const repoInfo = {
       name: data.name,
       description: data.description,
@@ -57,6 +88,7 @@ export async function POST(request: Request) {
       issues: data.open_issues_count,
       created_at: data.created_at,
       updated_at: data.updated_at,
+      structure: structure.tree,
     };
 
     console.log('Processed repoInfo:', JSON.stringify(repoInfo));
