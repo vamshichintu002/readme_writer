@@ -1,0 +1,18 @@
+# Project overview
+You are building a readme writer app, where users can write a readme for their github projects
+
+You will be using NextJS.14, shadcn, tailwind, Lucid icon
+
+# Core functionalities
+1. users can input their github repo url
+2. That url will be used to fetch the repo information using github api
+3. Then the information will be passed to groq api to generate a readme file
+4. The output of the groq api is displayed to the users as readme file.
+
+
+# Doc
+github api doc
+groq api docs
+
+# Current file structure
+xxxX
