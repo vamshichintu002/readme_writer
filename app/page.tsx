@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { Github, Copy, Download, Eye, Code, BookOpen, Linkedin, Instagram } from 'lucide-react'
+import { Github, Copy, Download, Eye, Code, BookOpen, Linkedin, Instagram, Twitter } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 // Remove this line
@@ -150,7 +150,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <BookOpen className="w-8 h-8 text-teal-500" />
-            <span className="text-2xl font-bold text-gray-800 dark:text-white">ReadMe Genie</span>
+            <span className="text-2xl font-bold text-gray-800 dark:text-white">Github README</span>
           </div>
           <div className="flex items-center space-x-2 md:space-x-4">
             <a href="https://github.com/vamshichintu002/vamshichintu002" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-300 hover:text-teal-500 dark:hover:text-teal-400">
@@ -164,6 +164,10 @@ export default function Home() {
             <a href="https://www.instagram.com/vamshichintu02/" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-300 hover:text-teal-500 dark:hover:text-teal-400">
               <Instagram className="h-5 w-5" />
               <span className="sr-only">Instagram</span>
+            </a>
+            <a href="https://x.com/vamshichintu02" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-300 hover:text-teal-500 dark:hover:text-teal-400">
+              <Twitter className="h-5 w-5" />
+              <span className="sr-only">Twitter</span>
             </a>
           </div>
         </div>
@@ -180,7 +184,7 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               className="text-4xl md:text-6xl font-bold mb-8"
             >
-              ReadMe Genie: <br/>
+              Github README: <br/>
               <span className="text-blue-600">
                 {typedText}
               </span>
