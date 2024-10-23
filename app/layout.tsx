@@ -1,8 +1,6 @@
-'use client'
 import { Analytics } from "@vercel/analytics/react"
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { useEffect, useState } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,17 +16,16 @@ const structuredData = {
   }
 };
 
+export const metadata = {
+  title: 'Github README Generator',
+  description: 'Generate README files for your GitHub repositories',
+}
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const [structuredDataString, setStructuredDataString] = useState('');
-
-  useEffect(() => {
-    setStructuredDataString(JSON.stringify(structuredData));
-  }, []);
-
   return (
     <html lang="en">
       <head>
@@ -55,9 +52,7 @@ export default function RootLayout({
         <title>GitHub README - Crafting Clarity for Your Code</title>
 
         {/* Structured Data */}
-        {structuredDataString && (
-          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: structuredDataString }} />
-        )}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       </head>
       <body className={`${inter.className} flex flex-col min-h-screen bg-gradient-to-br from-teal-100 to-rose-100 dark:from-teal-900 dark:to-rose-900`}>
         <main className="flex-grow">
@@ -71,6 +66,21 @@ export default function RootLayout({
           </div>
         </footer>
         <Analytics />
+        
+        {/* Buy Me a Coffee Widget iframe */}
+        <iframe 
+          src="/bmc-widget.html" 
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            border: 'none',
+            height: '300px',  // Increased height
+            width: '300px',   // Increased width
+            zIndex: 9999,
+            overflow: 'hidden'  // Hide any overflow
+          }}
+        />
       </body>
     </html>
   )
