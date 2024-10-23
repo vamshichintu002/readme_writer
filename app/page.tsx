@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { Github, Copy, Download, Eye, Code, BookOpen, Linkedin, Instagram, Twitter } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { Github, Copy, Download, Eye, Code, BookOpen, Linkedin, Instagram, Twitter, X } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 // Remove this line
 // import { TypeAnimation } from 'react-type-animation'
@@ -73,6 +73,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null)
   const [mode, setMode] = useState<'preview' | 'raw'>('preview')
   const [copySuccess, setCopySuccess] = useState(false)
+  const [showPopup, setShowPopup] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -109,6 +110,9 @@ export default function Home() {
 
       const readmeData = await readmeResponse.json()
       setReadme(readmeData.readme)
+
+      // Show popup after successful generation
+      setShowPopup(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unexpected error occurred')
     } finally {
@@ -353,6 +357,38 @@ export default function Home() {
           </div>
         </div>
       </main>
+
+      {/* Popup */}
+      <AnimatePresence>
+        {showPopup && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          >
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl relative">
+              <button
+                onClick={() => setShowPopup(false)}
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <X size={24} />
+              </button>
+              <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Support the Project</h2>
+              <p className="mb-4 text-gray-600 dark:text-gray-300">
+                If you found this tool helpful, consider buying me a coffee!
+              </p>
+              <a href="https://www.buymeacoffee.com/vamshichintu02" target="_blank" rel="noopener noreferrer">
+                <img
+                  src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=vamshichintu02&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"
+                  alt="Buy Me A Coffee"
+                  className="w-full max-w-[300px] mx-auto"
+                />
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
