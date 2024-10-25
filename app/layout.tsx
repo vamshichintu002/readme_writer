@@ -1,6 +1,7 @@
 import { Analytics } from "@vercel/analytics/react"
 import { Inter } from 'next/font/google'
 import './globals.css'
+import BuyMeCoffeeWidget from './components/BuyMeCoffeeWidget'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -53,6 +54,14 @@ export default function RootLayout({
 
         {/* Structured Data */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+        <style>{`
+          @media (max-width: 768px) {
+            .bmc-iframe { display: none; }
+          }
+          @media (min-width: 769px) {
+            .bmc-react { display: none; }
+          }
+        `}</style>
       </head>
       <body className={`${inter.className} flex flex-col min-h-screen bg-gradient-to-br from-teal-100 to-rose-100 dark:from-teal-900 dark:to-rose-900`}>
         <main className="flex-grow">
@@ -66,19 +75,21 @@ export default function RootLayout({
           </div>
         </footer>
         <Analytics />
-        
-        {/* Buy Me a Coffee Widget iframe */}
+        <div className="bmc-react">
+          <BuyMeCoffeeWidget />
+        </div>
         <iframe 
+          className="bmc-iframe"
           src="/bmc-widget.html" 
           style={{
             position: 'fixed',
             bottom: '20px',
             right: '20px',
             border: 'none',
-            height: '300px',  // Increased height
-            width: '300px',   // Increased width
+            height: '300px',
+            width: '300px',
             zIndex: 9999,
-            overflow: 'hidden'  // Hide any overflow
+            overflow: 'hidden'
           }}
         />
       </body>
