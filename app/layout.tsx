@@ -11,6 +11,7 @@ const structuredData = {
   "@type": "WebSite",
   "name": "GitHub README Generator",
   "url": "https://www.githubreadme.site/",
+  "description": "Generate professional READMEs for your GitHub projects using AI. Improve your code documentation easily.",
   "potentialAction": {
     "@type": "SearchAction",
     "target": "https://www.githubreadme.site/?s={search_term_string}",
@@ -19,8 +20,46 @@ const structuredData = {
 };
 
 export const metadata = {
-  title: 'Github README Generator',
-  description: 'Generate README files for your GitHub repositories',
+  title: 'GitHub README Generator - Craft Clear and Professional READMEs',
+  description: 'Generate README files for your GitHub repositories using AI. Enhance your code documentation effortlessly.',
+  keywords: 'GitHub, README, generator, AI, documentation, code, project, GitHub readme generator, GitHub README template, Github readme example, GitHub readme profile, Github readme file, GitHub README editor, GitHub readme Generator AI',
+
+  openGraph: {
+    title: 'GitHub README - Crafting Clarity for Your Code',
+    description: 'Generate professional READMEs for your GitHub projects using AI. Improve your code documentation easily.',
+    url: 'https://www.githubreadme.site/',
+    siteName: 'GitHub README Generator',
+    images: [
+      {
+        url: 'https://www.githubreadme.site/og-image.jpg', // Make sure to create and add this image
+        width: 1200,
+        height: 630,
+        alt: 'GitHub README Generator',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'GitHub README - AI-Powered README Generator',
+    description: 'Create clear and professional READMEs for your GitHub projects with our AI-powered tool.',
+    images: ['https://www.githubreadme.site/twitter-image.jpg'], // Make sure to create and add this image
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-site-verification-code', // Add your Google verification code
+  },
 }
 
 export default function RootLayout({
@@ -31,30 +70,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Basic Meta Tags */}
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="GitHub README Generator - Craft clear and professional READMEs for your projects using AI. Enhance your code documentation effortlessly." />
-        <meta name="keywords" content="GitHub, README, generator, AI, documentation, code, project, GitHub readme generator, GitHub README template, Github readme example, GitHub readme profile, Github readme file, GitHub README editor, GitHub readme Generator AI, Github-readme-stats" />
         <meta name="author" content="Vamshi Sudula" />
-
-        {/* Open Graph Tags */}
-        <meta property="og:title" content="GitHub README - Crafting Clarity for Your Code" />
-        <meta property="og:description" content="Generate professional READMEs for your GitHub projects using AI. Improve your code documentation easily." />
-        <meta property="og:image" content="https://www.githubreadme.site/" />
-        <meta property="og:url" content="https://www.githubreadme.site/" />
-        <meta property="og:type" content="website" />
-
-        {/* Twitter Card Tags */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="GitHub README - AI-Powered README Generator" />
-        <meta name="twitter:description" content="Create clear and professional READMEs for your GitHub projects with our AI-powered tool." />
-        <meta name="twitter:image" content="https://www.githubreadme.site/" />
-
-        <title>GitHub README - Crafting Clarity for Your Code</title>
+        <link rel="canonical" href="https://www.githubreadme.site/" />
+        <meta name="theme-color" content="#4285f4" />
 
         {/* Structured Data */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+        
         <style>{`
           @media (max-width: 768px) {
             .bmc-iframe { display: none; }
