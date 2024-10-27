@@ -108,10 +108,19 @@ export default function RootLayout({
           {children}
         </main>
         <footer className="w-full py-4 bg-gradient-to-r from-teal-500 to-rose-500 dark:from-teal-700 dark:to-rose-700">
-          <div className="container mx-auto px-4">
-            <p className="text-center text-white text-sm font-medium">
+          <div className="container mx-auto px-4 flex flex-col items-center">
+            <p className="text-center text-white text-sm font-medium mb-2">
               Made with <span className="text-red-300 dark:text-red-400">❤️</span> by <a href="https://www.linkedin.com/in/sudulavamshi/" className="font-bold" target="_blank" rel="noopener noreferrer">Vamshi Sudula</a>
             </p>
+            <a href="https://www.producthunt.com/posts/github-readme-generator-047dce64-4dc8-4d53-8d40-aedd1ac0c1e6?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-github&#0045;readme&#0045;generator&#0045;047dce64&#0045;4dc8&#0045;4d53&#0045;8d40&#0045;aedd1ac0c1e6" target="_blank" rel="noopener noreferrer">
+              <img 
+                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=538042&theme=light" 
+                alt="GitHub README Generator - Craft clear and professional readmes | Product Hunt" 
+                style={{ width: '250px', height: '54px' }} 
+                width="250" 
+                height="54" 
+              />
+            </a>
           </div>
         </footer>
         <Analytics />
